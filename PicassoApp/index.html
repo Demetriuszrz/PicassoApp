@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ПИКАССО — Конструктор открыток</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="js/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="page-header">
+    <span class="logo-text">ПИКАССО</span>
+    <span class="step-badge" id="stepBadge">Этап 1</span>
+    <h1 id="pageTitle">Выбор картинки</h1>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar">
+    <div class="progress-step active" id="prog1">1</div>
+    <div class="progress-line" id="progLine1"></div>
+    <div class="progress-step" id="prog2">2</div>
+    <div class="progress-line" id="progLine2"></div>
+    <div class="progress-step" id="prog3">3</div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main-container">
+
+    <!-- ================= ЭТАП 1: Выбор картинки ================= -->
+    <section class="stage active" id="stage1">
+      <h2 class="stage-title">Выберите шаблон открытки</h2>
+      <p class="stage-subtitle">Нажмите на карточку, миниатюру или кнопку варианта. Для 4-го варианта загрузите своё изображение.</p>
+
+      <div class="carousel-wrapper" id="carousel">
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="carouselTrack">
+            <!-- Шаблон 1 -->
+            <div class="carousel-slide"><div class="card-preview selected" id="cardPreview0" onclick="selectCard(0)">
+              <div class="image-block">
+                <img src="images/image_1.png" alt="Шаблон 1" class="template-img">
+                <div style="position:absolute;top:16px;left:16px;z-index:2;"><img src="sber-logo.png" class="sber-logo-img"></div>
+              </div>
+              <div class="text-block" style="background: var(--card-bg);">
+                <input class="field h1-field" type="text" value="С днём рождения!" maxlength="40" readonly>
+                <input class="field p0-field" type="text" value="Уважаемый Руслан Викторович!" maxlength="60" readonly>
+                <textarea class="field p1-field" rows="3" maxlength="200" readonly>Желаем здоровья, счастья и благополучия!</textarea>
+                <input class="field footer-field" type="text" value="Команда Сбера" maxlength="40" readonly>
+              </div>
+              <div class="selection-badge"></div>
+            </div></div>
+            <!-- Шаблон 2 -->
+            <div class="carousel-slide"><div class="card-preview" id="cardPreview1" onclick="selectCard(1)">
+              <div class="image-block">
+                <img src="images/image_2.png" alt="Шаблон 2" class="template-img">
+                <div style="position:absolute;top:16px;left:16px;z-index:2;"><img src="sber-logo.png" class="sber-logo-img"></div>
+              </div>
+              <div class="text-block" style="background: var(--card-bg);">
+                <input class="field h1-field" type="text" value="С днём рождения!" maxlength="40" readonly>
+                <input class="field p0-field" type="text" value="Дорогой коллега!" maxlength="60" readonly>
+                <textarea class="field p1-field" rows="3" maxlength="200" readonly>Пусть этот год станет годом новых свершений!</textarea>
+                <input class="field footer-field" type="text" value="Коллектив" maxlength="40" readonly>
+              </div>
+              <div class="selection-badge"></div>
+            </div></div>
+            <!-- Шаблон 3 -->
+            <div class="carousel-slide"><div class="card-preview" id="cardPreview2" onclick="selectCard(2)">
+              <div class="image-block">
+                <img src="images/image_3.png" alt="Шаблон 3" class="template-img">
+                <div style="position:absolute;top:16px;left:16px;z-index:2;"><img src="sber-logo.png" class="sber-logo-img"></div>
+              </div>
+              <div class="text-block" style="background: var(--card-bg);">
+                <input class="field h1-field" type="text" value="Поздравляем!" maxlength="40" readonly>
+                <input class="field p0-field" type="text" value="Уважаемые партнёры," maxlength="60" readonly>
+                <textarea class="field p1-field" rows="3" maxlength="200" readonly>Благодарим за сотрудничество!</textarea>
+                <input class="field footer-field" type="text" value="Сбер" maxlength="40" readonly>
+              </div>
+              <div class="selection-badge"></div>
+            </div></div>
+            <!-- Шаблон 4 -->
+            <div class="carousel-slide">
+              <div class="card-preview" id="cardPreview3" onclick="selectCard(3)">
+                <div class="image-block" id="uploadImageBlock">
+                  <div class="upload-placeholder" id="uploadPlaceholder" onclick="document.getElementById('fileInput').click(); event.stopPropagation();">
+                    <svg viewBox="0 0 48 48" fill="none">
+                      <path d="M24 32V16M24 16L18 22M24 16L30 22" stroke="#999" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M8 32V38H40V32" stroke="#999" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Загрузить изображение</span>
+                  </div>
+                  <img class="user-uploaded" id="userImage" style="display:none;" alt="">
+                  <button class="remove-image-btn" id="removeImageBtn" onclick="removeUserImage(event)">×</button>
+                  <div style="position:absolute;top:16px;left:16px;z-index:2;display:none;" id="sberLogo4">
+                    <img src="sber-logo.png" class="sber-logo-img">
+                  </div>
+                </div>
+                <div class="text-block" style="background: var(--card-bg);">
+                  <input class="field h1-field" type="text" value="С днём рождения!" maxlength="40" readonly>
+                  <input class="field p0-field" type="text" value="Уважаемый(ая)," maxlength="60" readonly>
+                  <textarea class="field p1-field" rows="3" maxlength="200" readonly>Текст вашего поздравления...</textarea>
+                  <input class="field footer-field" type="text" value="Отправитель" maxlength="40" readonly>
+                </div>
+                <div class="selection-badge"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      </div>
+
+      <div class="slider-controls">
+        <button class="slider-arrow" onclick="moveSlide(-1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 2L4 8L10 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="slider-dots" id="sliderDots">
+          <div class="slider-dot active" onclick="goToSlide(0)"></div>
+          <div class="slider-dot" onclick="goToSlide(1)"></div>
+          <div class="slider-dot" onclick="goToSlide(2)"></div>
+          <div class="slider-dot" onclick="goToSlide(3)"></div>
+        </div>
+        <button class="slider-arrow" onclick="moveSlide(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2L12 8L6 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+
+      <div class="thumbnails-row">
+        <div class="thumb-btn active" id="thumb0" onclick="goToSlide(0)">
+          <div class="thumb-bg"><img src="images/image_1.png" alt="" onerror="this.style.background='#0a4d3c'"></div>
+          <span class="thumb-number">1</span>
+          <span class="thumb-label">Вариант 1</span>
+        </div>
+        <div class="thumb-btn" id="thumb1" onclick="goToSlide(1)">
+          <div class="thumb-bg"><img src="images/image_2.png" alt="" onerror="this.style.background='#0b5d4a'"></div>
+          <span class="thumb-number">2</span>
+          <span class="thumb-label">Вариант 2</span>
+        </div>
+        <div class="thumb-btn" id="thumb2" onclick="goToSlide(2)">
+          <div class="thumb-bg"><img src="images/image_3.png" alt="" onerror="this.style.background='#063e30'"></div>
+          <span class="thumb-number">3</span>
+          <span class="thumb-label">Вариант 3</span>
+        </div>
+        <div class="thumb-btn" id="thumb3" onclick="goToSlide(3)">
+          <div class="thumb-bg" style="background: var(--card-bg);"></div>
+          <span class="thumb-number">4</span>
+          <span class="thumb-label">Своё фото</span>
+        </div>
+      </div>
+
+      <div class="variant-buttons">
+        <button class="variant-btn active" onclick="selectCard(0)">1-ый вариант</button>
+        <button class="variant-btn" onclick="selectCard(1)">2-ой вариант</button>
+        <button class="variant-btn" onclick="selectCard(2)">3-ий вариант</button>
+        <button class="variant-btn" onclick="selectCard(3)">4-ый (загрузить)</button>
+      </div>
+
+      <div class="nav-footer">
+        <div></div>
+        <button class="btn btn-primary" onclick="goToStage(2)">Далее: Текст</button>
+      </div>
+    </section>
+
+    <!-- ================= ЭТАП 2: ВВОД ТЕКСТА ================= -->
+    <section class="stage" id="stage2">
+      <h2 class="stage-title">Как добавить текст на открытку?</h2>
+      <p class="stage-subtitle">Выберите способ: сгенерировать с помощью ИИ-конструктора или заполнить поля вручную.</p>
+
+      <div class="path-selector">
+        <button class="path-btn active" id="pathAi" onclick="selectPath('ai')">
+          <div class="path-icon">🤖</div>
+          <div class="path-title">Создать текст с помощью ИИ</div>
+          <div class="path-desc">Сконструируйте промт для LLM, получите текст и скопируйте</div>
+        </button>
+        <button class="path-btn" id="pathManual" onclick="selectPath('manual')">
+          <div class="path-icon">✍️</div>
+          <div class="path-title">Написать самостоятельно</div>
+          <div class="path-desc">Заполните каждое текстовое поле открытки напрямую</div>
+        </button>
+      </div>
+
+      <!-- Конструктор промта -->
+      <div class="constructor-panel visible" id="constructorPanel">
+        <div class="constructor-title">Конструктор промта</div>
+        <p style="font-size:12px; color:#888; margin-bottom:16px;">Настройте параметры, нажмите «Создать промт» и скопируйте результат.</p>
+
+        <div class="collapse-field open" id="collapseGender">
+          <div class="collapse-header" onclick="toggleCollapse('collapseGender')">
+            <span class="toggle-icon">+</span>  
+            <span class="field-label">Пол М/Ж (выбор)</span>
+          </div>
+          <div class="collapse-body"><div class="collapse-content">
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="gender" value="male" checked> Мужской</label>
+              <label class="radio-option"><input type="radio" name="gender" value="female"> Женский</label>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="collapse-field" id="collapsePosition">
+          <div class="collapse-header" onclick="toggleCollapse('collapsePosition')">
+            <span class="toggle-icon">+</span>
+            <span class="field-label">Должность</span>
+          </div>
+          <div class="collapse-body"><div class="collapse-content">
+            <input class="field-input" type="text" placeholder="Например: Директор департамента" id="inputPosition" maxlength="50" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+          </div></div>
+        </div>
+
+        <div class="collapse-field open" id="collapseStyle">
+          <div class="collapse-header" onclick="toggleCollapse('collapseStyle')">
+            <span class="toggle-icon">+</span>
+            <span class="field-label">Стиль (душевное/официальное)</span>
+          </div>
+          <div class="collapse-body"><div class="collapse-content">
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="style" value="soulful" checked> Душевное</label>
+              <label class="radio-option"><input type="radio" name="style" value="official"> Официальное</label>
+            </div>
+          </div></div>
+        </div>
+
+        <button class="btn-generate" id="btnGenerate" onclick="generatePrompt()">Создать промт</button>
+
+        <div class="prompt-output" id="promptOutput" style="display:none;">
+          <div class="prompt-label">Текст промта</div>
+          <div class="prompt-text" id="promptText"></div>
+          <button class="btn-copy" id="btnCopy" onclick="copyPrompt()">Скопировать</button>
+        </div>
+      </div>
+
+      <!-- Самостоятельно -->
+      <div class="manual-panel" id="manualPanel">
+        <div style="font-size:15px; font-weight:700; margin-bottom:4px;">Заполните текстовые поля</div>
+        <p style="font-size:12px; color:#777; margin-bottom:16px;">Нажмите на поле — введите текст. Ограничение по символам учитывается автоматически.</p>
+
+        <div class="card-editor">
+          <div class="card-preview-container">
+            <div class="card-preview" id="liveCardPreview">
+              <div class="image-block" id="liveImageBlock">
+                <img src="images/image_1.png" alt="" class="template-img" id="liveTemplateImg" onerror="this.style.display='none'">
+                <img id="liveUserImg" style="display:none;" class="user-uploaded" alt="">
+                <div style="position:absolute;top:16px;left:16px;z-index:2;"><img src="sber-logo.png" alt="Сбер" class="sber-logo-img" onerror="this.style.display='none'"></div>
+              </div>
+              <div class="text-block" style="background: var(--card-bg);">
+                <input class="field h1-field" id="liveH1" type="text" value="С днём рождения!" maxlength="40" oninput="updateLiveField('h1', this)">
+                <input class="field p0-field" id="liveP0" type="text" value="Уважаемый Руслан Викторович!" maxlength="60" oninput="updateLiveField('p0', this)">
+                <textarea class="field p1-field" id="liveP1" rows="3" value="Текст поздравления..." maxlength="200" oninput="updateLiveField('p1', this)"></textarea>
+                <input class="field footer-field" id="liveFooter" type="text" placeholder="Даниил Серебряков" maxlength="40" oninput="updateLiveField('footer', this)">
+              </div>
+            </div>
+          </div>
+
+          <div class="fields-list">
+            <div class="field-card">
+              <div class="field-name">H1 — Заголовок</div>
+              <div class="field-hint">По умолчанию: «С днём рождения!»</div>
+              <input class="field-input" id="fieldH1" type="text" value="С днём рождения!" maxlength="40" oninput="syncField('h1', this)">
+              <div class="char-count" id="charH1">20 / 40</div>
+            </div>
+            <div class="field-card">
+              <div class="field-name">P0 — Обращение</div>
+              <div class="field-hint">По умолчанию: «Уважаемый Руслан Викторович!»</div>
+              <input class="field-input" id="fieldP0" type="text" value="Уважаемый Руслан Викторович!" maxlength="60" oninput="syncField('p0', this)">
+              <div class="char-count" id="charP0">32 / 60</div>
+            </div>
+            <div class="field-card">
+              <div class="field-name">P1 — Текст поздравления</div>
+              <div class="field-hint">Пример текста. Можно делать переносы строк.</div>
+              <textarea class="field-input" id="fieldP1" rows="4" value="Желаем здоровья..." maxlength="200" oninput="syncField('p1', this)"></textarea>
+              <div class="char-count" id="charP1">0 / 200</div>
+            </div>
+            <div class="field-card">
+              <div class="field-name">Footer — От кого</div>
+              <div class="field-hint">По умолчанию: «Даниил Серебряков»</div>
+              <input class="field-input" id="fieldFooter" type="text" value="Даниил Серебряков" maxlength="40" oninput="syncField('footer', this)">
+              <div class="char-count" id="charFooter">0 / 40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-footer">
+        <button class="btn btn-secondary" onclick="goToStage(1)">← Назад</button>
+        <button class="btn btn-primary" onclick="goToStage(3)">Далее: Создание →</button>
+      </div>
+    </section>
+
+    <!-- ================= ЭТАП 3 Скачивание ================= -->
+    <section class="stage" id="stage3">
+      <div class="final-stage">
+        <h2 class="stage-title">Ваша открытка готова!</h2>
+        <p class="stage-subtitle">Проверьте результат и скачайте файл для отправки.</p>
+
+        <div class="final-card-wrapper">
+          <div id="finalCard">
+            <div class="final-left">
+              <img src="images/image_1.png" alt="" class="template-img" id="finalTemplateImg" onerror="this.style.display='none'">
+              <img id="finalUserImg" style="display:none;" class="user-img" alt="">
+              <div style="position:absolute;top:24px;left:24px;z-index:2;"><img src="sber-logo.png" alt="Сбер" class="sber-logo-img" style="height:32px;" onerror="this.style.display='none'"></div>
+            </div>
+            <div class="final-right" style="background: var(--card-bg);">
+              <div class="txt-h1" id="finalH1"></div>
+              <div class="txt-p0" id="finalP0"></div>
+              <div class="txt-p1" id="finalP1"></div>
+              <div class="txt-footer" id="finalFooter"></div>
+            </div>
+          </div>
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+            <div style="font-size:14px; color:#555;">Генерация изображения...</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:20px;">
+          <button class="btn btn-primary btn-download" onclick="downloadCard('png')">Скачать PNG</button>
+          <button class="btn btn-secondary btn-download" onclick="downloadCard('jpg')">Скачать JPG</button>
+        </div>
+
+        <button class="btn btn-secondary" onclick="goToStage(1)">Создать новую открытку</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ let userImageSrc = null;
 let currentPath = 'ai';
 let positionOpen = false;
 let positionValue = '';
+let currentTemplateSrc = null;
 
 // ===== Навигация =====
 function goToStage(step) {
@@ -49,12 +50,19 @@ function updateCarousel() {
 function goToSlide(index) { if (index >= 0 && index < totalSlides) { currentSlide = index; updateCarousel(); } }
 function moveSlide(dir) { goToSlide(currentSlide + dir); }
 
+// ===== Выбор карточки =====
 function selectCard(index) {
     selectedCard = index;
     currentSlide = index;
+
+    const cardEl = document.getElementById('cardPreview' + index);
+    const imgEl = cardEl?.querySelector('.template-img');
+    currentTemplateSrc = imgEl ? imgEl.src : null;
+    
     updateCarousel();
     showToast(`Выбран вариант ${index + 1}`);
 }
+
 
 // Свайпы
 const viewport = document.querySelector('.carousel-viewport');
@@ -113,16 +121,17 @@ function removeUserImage(event) {
 
 // ===== Синхронизация превью =====
 function syncStage2Preview() {
-    const liveBlock = document.getElementById('liveImageBlock');
     const liveTemplateImg = document.getElementById('liveTemplateImg');
     const liveUserImg = document.getElementById('liveUserImg');
-      
+
     if (selectedCard === 3 && userImageSrc) {
-    liveTemplateImg.style.display = 'none';
-    liveUserImg.src = userImageSrc;
-    liveUserImg.style.display = 'block';
+        liveTemplateImg.style.display = 'none';
+        liveUserImg.src = userImageSrc;
+        liveUserImg.style.display = 'block';
     } else {
-    liveUserImg.style.display = 'none';
+        liveUserImg.style.display = 'none';
+        liveTemplateImg.style.display = 'block';
+        liveTemplateImg.src = currentTemplateSrc;
     }
 }
 
@@ -197,11 +206,13 @@ function renderFinalCard() {
     const finalUserImg = document.getElementById('finalUserImg');
       
     if (selectedCard === 3 && userImageSrc) {
-    finalTemplateImg.style.display = 'none';
-    finalUserImg.src = userImageSrc;
-    finalUserImg.style.display = 'block';
+        finalTemplateImg.style.display = 'none';
+        finalUserImg.src = userImageSrc;
+        finalUserImg.style.display = 'block';
     } else {
-    finalUserImg.style.display = 'none';
+        finalUserImg.style.display = 'none';
+        finalTemplateImg.style.display = 'block';
+        finalTemplateImg.src = currentTemplateSrc;
     }
 
     const h1 = document.getElementById('fieldH1')?.value;

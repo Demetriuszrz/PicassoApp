@@ -379,14 +379,34 @@ textarea.field-input { resize: vertical; min-height: 60px; }
 /* =================== ЭТАП 3) =================== */
 .final-stage { text-align: center; }
 .final-card-wrapper {
-    display: inline-block; margin-bottom: 24px; border-radius: var(--radius);
-    box-shadow: var(--shadow); overflow: hidden; position: relative; max-width: 100%;
+  /* ИСПРАВЛЕНО: заменено inline-block на block для корректного поведения на мобильных */
+  display: block; 
+  margin: 0 auto 24px auto; /* Центрирование по горизонтали */
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  max-width: 100%;
+  width: fit-content; /* Чтобы на десктопе блок не растягивался на 100% ширины экрана, если открытка меньше */
 }
 #finalCard {
     width: 450px; height: 800px; display: flex; flex-direction: column;
     background: #000; position: relative;
 }
-@media (max-width: 500px) { #finalCard { width: 100%; height: auto; aspect-ratio: 9/16; } }
+
+/* Убедитесь, что медиа-запрос для #finalCard остался таким (или обновите его): */
+@media (max-width: 500px) {
+  #finalCard {
+    width: 100%; /* Растягиваем внутреннюю карточку */
+    height: auto;
+    aspect-ratio: 9/16;
+  }
+  /* Дополнительно: обёртка на мобильных должна занимать всю доступную ширину */
+  .final-card-wrapper {
+    width: 100%; 
+    max-width: 450px;
+  }
+}
 
 .final-left { flex: 1 1 55%; position: relative; overflow: hidden; background: #000; }
 .final-left .template-img, .final-left img.user-img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -420,11 +440,57 @@ textarea.field-input { resize: vertical; min-height: 60px; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
 /* ===== RESPONSIVE ===== */
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ЭТАПА 2 ===== */
 @media (max-width: 768px) {
-    .page-header { padding: 16px 20px; }
-    .main-container { padding: 20px 16px 40px; }
-    .card-editor { flex-direction: column; }
-    .card-preview-container { max-width: 100%; }
-    .path-btn { min-width: 100%; }
-    .thumb-btn { width: 60px; height: 106px; }
+  /* Принудительно скрываем панели при загрузке */
+  .constructor-panel, .manual-panel {
+    display: none;
+  }
+  .constructor-panel.visible, .manual-panel.visible {
+    display: block;
+  }
+
+  /* Плавное скрытие блока выбора */
+  .path-selector {
+    transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease, margin 0.3s ease;
+    overflow: hidden;
+  }
+  .path-selector.hidden-mobile {
+    opacity: 0;
+    transform: translateY(-10px);
+    height: 0;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  /* Кнопка возврата */
+  .mobile-switcher-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    background: transparent;
+    border: 1px solid var(--sber-green);
+    color: var(--sber-green);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mobile-switcher-btn::before { content: '← '; }
+  .mobile-switcher-btn:hover { background: var(--sber-green-light); }
+
+  .constructor-panel.visible, .manual-panel.visible { padding-top: 8px; }
+}
+
+/* На десктопе всегда показываем выбор, скрываем мобильную кнопку */
+@media (min-width: 769px) {
+  .mobile-switcher-btn { display: none; }
+  .path-selector.hidden-mobile { 
+    opacity: 1; transform: none; height: auto; margin: 0 0 24px 0; pointer-events: auto; 
+  }
+  .constructor-panel, .manual-panel { display: none; }
+  .constructor-panel.visible, .manual-panel.visible { display: block; }
 }

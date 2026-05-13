@@ -50,19 +50,12 @@ function updateCarousel() {
 function goToSlide(index) { if (index >= 0 && index < totalSlides) { currentSlide = index; updateCarousel(); } }
 function moveSlide(dir) { goToSlide(currentSlide + dir); }
 
-// ===== Выбор карточки =====
 function selectCard(index) {
     selectedCard = index;
     currentSlide = index;
-
-    const cardEl = document.getElementById('cardPreview' + index);
-    const imgEl = cardEl?.querySelector('.template-img');
-    currentTemplateSrc = imgEl ? imgEl.src : null;
-    
     updateCarousel();
     showToast(`Выбран вариант ${index + 1}`);
 }
-
 
 // Свайпы
 const viewport = document.querySelector('.carousel-viewport');
@@ -119,6 +112,19 @@ function removeUserImage(event) {
   showToast('Изображение удалено');
 }
 
+function selectCard(index) {
+    selectedCard = index;
+    currentSlide = index;
+    
+    // Берём src изображения прямо из выбранной карточки
+    const cardEl = document.getElementById('cardPreview' + index);
+    const imgEl = cardEl?.querySelector('.template-img');
+    currentTemplateSrc = imgEl ? imgEl.src : null;
+    
+    updateCarousel();
+    showToast(`Выбран вариант ${index + 1}`);
+}
+
 // ===== Синхронизация превью =====
 function syncStage2Preview() {
     const liveTemplateImg = document.getElementById('liveTemplateImg');
@@ -135,13 +141,43 @@ function syncStage2Preview() {
     }
 }
 
-// ===== Выбор способа =====
 function selectPath(path) {
-    currentPath = path;
-    document.getElementById('pathAi').classList.toggle('active', path === 'ai');
-    document.getElementById('pathManual').classList.toggle('active', path === 'manual');
-    document.getElementById('constructorPanel').classList.toggle('visible', path === 'ai');
-    document.getElementById('manualPanel').classList.toggle('visible', path === 'manual');
+  currentPath = path;
+  const pathAi = document.getElementById('pathAi');
+  const pathManual = document.getElementById('pathManual');
+  const constructorPanel = document.getElementById('constructorPanel');
+  const manualPanel = document.getElementById('manualPanel');
+  const pathSelector = document.querySelector('.path-selector');
+
+  pathAi.classList.toggle('active', path === 'ai');
+  pathManual.classList.toggle('active', path === 'manual');
+  constructorPanel.classList.toggle('visible', path === 'ai');
+  manualPanel.classList.toggle('visible', path === 'manual');
+
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    if (pathSelector) pathSelector.classList.add('hidden-mobile');
+
+    const targetPanel = path === 'ai' ? constructorPanel : manualPanel;
+
+    // Создаём кнопку возврата один раз
+    if (!targetPanel.querySelector('.mobile-switcher-btn')) {
+      const backBtn = document.createElement('button');
+      backBtn.className = 'mobile-switcher-btn';
+      backBtn.textContent = 'Сменить способ';
+      backBtn.addEventListener('click', () => {
+        if (pathSelector) pathSelector.classList.remove('hidden-mobile');
+        constructorPanel.classList.remove('visible');
+        manualPanel.classList.remove('visible');
+        pathAi.classList.remove('active');
+        pathManual.classList.remove('active');
+        pathSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      targetPanel.prepend(backBtn);
+    }
+
+    setTimeout(() => targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+  }
 }
 
 function toggleCollapse(id) { document.getElementById(id).classList.toggle('open'); }
@@ -250,3 +286,11 @@ function showToast(msg) {
 
 // Инициализация
 updateCarousel();
+
+// Гарантируем, что на мобильных панели скрыты сразу при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth <= 768) {
+    document.getElementById('constructorPanel')?.classList.remove('visible');
+    document.getElementById('manualPanel')?.classList.remove('visible');
+  }
+});
